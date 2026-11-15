@@ -3,3 +3,9 @@ __pycache__/
 *.json
 *.dSYM/
 *.bin
+benchmark/juliet/
+.venv/
+.ruff_cache/
+.pytest_cache/
+results/analysis/*/*.png
+results/analysis/*.png
