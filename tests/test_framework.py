@@ -358,7 +358,6 @@ class TestFramework(unittest.TestCase):
     def test_analysis_generates_time_and_rss_overhead_charts(self) -> None:
         fields = [
             "tool_name", "testcase_path", "cwe", "flavor", "detected", "outcome",
-            "warmup_runs",
             "wall_clock_time_s", "user_time_s", "sys_time_s", "peak_rss_kb",
         ]
         rows = [
@@ -381,7 +380,6 @@ class TestFramework(unittest.TestCase):
                 ]["asan"]["matched_testcases"],
                 1,
             )
-            self.assertNotIn("warmup_runs", summary["run_protocol"])
             self.assertTrue((output_dir / "wall_clock/wall_clock_overhead.png").is_file())
             self.assertTrue((output_dir / "peak_rss/peak_rss_overhead.png").is_file())
             self.assertTrue((output_dir / "repeatability/repeatability.png").is_file())
@@ -508,7 +506,7 @@ class TestFramework(unittest.TestCase):
                 self.assertEqual(test_case.stdin_data, "10\n")
                 self.assertEqual(test_case.to_dict()["stdin_data"], "10\n")
 
-    def test_reports_record_stdin_and_repetition_metadata_without_warmups(self) -> None:
+    def test_reports_record_stdin_and_repetition_metadata(self) -> None:
         test_case = TestCase(
             path=Path("test.c"),
             cwe="CWE121",
@@ -540,13 +538,11 @@ class TestFramework(unittest.TestCase):
         self.assertEqual(row["repetition"], "4")
         self.assertEqual(row["used_for_classification"], "False")
         self.assertEqual(row["tool_order"], "2")
-        self.assertNotIn("warmup_runs", fieldnames)
         self.assertEqual(row["planned_repetitions"], "20")
         self.assertEqual(row["random_seed"], "17")
         self.assertEqual(json_result["repetition"], 4)
         self.assertFalse(json_result["used_for_classification"])
         self.assertEqual(json_result["tool_order"], 2)
-        self.assertNotIn("warmup_runs", json_result)
         self.assertEqual(json_result["planned_repetitions"], 20)
         self.assertEqual(json_result["random_seed"], 17)
 
